@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+
+	<!-- Javascript SDKs-->
+	<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script> 
+	<script src="js/amazon-cognito-auth.min.js"></script>
+	<script src="https://sdk.amazonaws.com/js/aws-sdk-2.7.16.min.js"></script> 
+	<script src="js/amazon-cognito-identity.min.js"></script>   
+  <script src="js/config.js"></script>
+  <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" type="text/css" href="stylesheets/login.css">
+  </head>
+
+  <body>
+    <main class="mainholder">
+      <h1 class="login-header">Login</h1>
+      <i class="fas fa-lock" style="text-align: center; font-size: 8vw;"></i>
+      <form class="login-form">
+        <input type="text" id="inputUsername"  placeholder="Email address" name="username" required autofocus>
+        <input type="password" id="inputPassword"  placeholder="Password" name="password" required>    
+        <button type="button" onclick="signInButton()">Sign in</button>
+      </form>
+    
+    </main>
+
+<script>
+  function signInButton() {
+    
+	var authenticationData = {
+        Username : document.getElementById("inputUsername").value,
+        Password : document.getElementById("inputPassword").value,
+    };
+	
+    var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
+    
+	var poolData = {
+        UserPoolId : _config.cognito.userPoolId, // Your user pool id here
+        ClientId : _config.cognito.clientId, // Your client id here
+    };
+	
+    var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+	
+    var userData = {
+        Username : document.getElementById("inputUsername").value,
+        Pool : userPool,
+    };
+	
+    var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+	cognitoUser.authenticateUser(authenticationDetails, {
+        onSuccess: function (result) {
+			var accessToken = result.getAccessToken().getJwtToken();
+      console.log(accessToken);
+
+          //Direct users to site content -- maybe in some 'profile.html' file?
+          window.location.href="profile.html";	
+        },
+
+        onFailure: function(err) {
+            alert(err.message || JSON.stringify(err));
+        },
+    });
+  }
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+

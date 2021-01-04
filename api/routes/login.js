@@ -1,8 +1,9 @@
 var express = require('express');
 var router = express.Router();
+var path = require('path');
 
 router.get('/', function(req, res, next) {
-    res.send('API is working properly');
+    res.sendFile(path.join(__dirname+'/login.html'));
 });
 
 module.exports = router;
